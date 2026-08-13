@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Details | PLUTO</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="assets/logo.png" alt="Pluto Logo" />
+      <span>PLUTO</span>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <ul class="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="upload-resume.html">Upload Resume</a></li>
+      <li><a href="jobs.html" class="active">Jobs</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+    <label for="nav-toggle" class="navbar-toggle">
+      <span></span><span></span><span></span>
+    </label>
+  </nav>
+
+  <!-- ===== JOB DETAILS CONTENT ===== -->
+  <section class="container section">
+    <a href="jobs.html" class="back-link">&larr; Back to Jobs</a>
+
+    <p id="loadingMessage">Loading job details...</p>
+    <p id="errorMessage" class="form-message error"></p>
+
+    <div class="card job-details-card" id="jobDetailsCard" style="display: none;">
+
+      <div class="job-details-header">
+        <div>
+          <h1 id="jobTitle"></h1>
+          <p class="job-company" id="jobCompany"></p>
+        </div>
+        <span class="match-badge" id="jobMatchBadge"></span>
+      </div>
+
+      <div class="job-details-meta">
+        <span id="jobLocation">📍 —</span>
+        <span id="jobType">🕒 —</span>
+      </div>
+
+      <div class="job-details-section">
+        <h3>Job Description</h3>
+        <p id="jobDescription"></p>
+      </div>
+
+      <div class="job-details-section">
+        <h3>Required Skills</h3>
+        <div class="job-details-skills" id="jobSkills"></div>
+      </div>
+
+      <a href="#" class="btn" id="applyBtn" target="_blank" rel="noopener">Apply Now</a>
+    </div>
+
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-logo">
+        <img src="assets/logo.png" alt="Pluto Logo" />
+        <span>PLUTO</span>
+      </div>
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="upload-resume.html">Upload Resume</a></li>
+          <li><a href="jobs.html">Jobs</a></li>
+          <li><a href="profile.html">Profile</a></li>
+        </ul>
+      </div>
+      <div class="footer-about">
+        <h3>About PLUTO</h3>
+        <p>AI-powered resume checker and job recommendation tool to help you land your next role faster.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 PLUTO. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/jobs.js"></script>
+</body>
+</html>

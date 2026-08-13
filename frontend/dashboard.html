@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | PLUTO</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="assets/logo.png" alt="Pluto Logo" />
+      <span>PLUTO</span>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <ul class="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="upload-resume.html">Upload Resume</a></li>
+      <li><a href="jobs.html">Jobs</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+    <label for="nav-toggle" class="navbar-toggle">
+      <span></span><span></span><span></span>
+    </label>
+  </nav>
+
+  <!-- ===== DASHBOARD CONTENT ===== -->
+  <section class="container section">
+
+    <!-- Welcome banner -->
+    <div class="welcome-banner">
+      <h1 id="welcomeText">Welcome back!</h1>
+      <p>Here's a quick look at your resume and job match progress.</p>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="grid stats-grid">
+      <div class="card stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-value" id="atsScoreStat">--</div>
+        <p class="stat-label">ATS Score</p>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-icon">🛠️</div>
+        <div class="stat-value" id="skillsCountStat">--</div>
+        <p class="stat-label">Skills Detected</p>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-value" id="missingKeywordsStat">--</div>
+        <p class="stat-label">Missing Keywords</p>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-icon">💼</div>
+        <div class="stat-value" id="recommendedJobsStat">--</div>
+        <p class="stat-label">Recommended Jobs</p>
+      </div>
+    </div>
+
+    <!-- Recent resume -->
+    <div class="card recent-resume-card">
+      <div class="recent-resume-info">
+        <div class="recent-resume-icon">📄</div>
+        <div>
+          <h3 id="resumeFileName">No resume uploaded yet</h3>
+          <p id="resumeUploadDate">—</p>
+        </div>
+      </div>
+      <span class="status-pill missing" id="resumeStatusPill">Not Uploaded</span>
+    </div>
+
+    <!-- Quick actions -->
+    <h2>Quick Actions</h2>
+    <div class="grid quick-actions">
+      <a href="upload-resume.html" class="card action-btn">
+        <span class="action-icon">📤</span>
+        <span>Upload Resume</span>
+      </a>
+      <a href="ats-result.html" class="card action-btn">
+        <span class="action-icon">📈</span>
+        <span>View ATS Report</span>
+      </a>
+      <a href="jobs.html" class="card action-btn">
+        <span class="action-icon">💼</span>
+        <span>Browse Jobs</span>
+      </a>
+      <a href="profile.html" class="card action-btn">
+        <span class="action-icon">👤</span>
+        <span>Edit Profile</span>
+      </a>
+    </div>
+
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-logo">
+        <img src="assets/logo.png" alt="Pluto Logo" />
+        <span>PLUTO</span>
+      </div>
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="upload-resume.html">Upload Resume</a></li>
+          <li><a href="jobs.html">Jobs</a></li>
+          <li><a href="profile.html">Profile</a></li>
+        </ul>
+      </div>
+      <div class="footer-about">
+        <h3>About PLUTO</h3>
+        <p>AI-powered resume checker and job recommendation tool to help you land your next role faster.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 PLUTO. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

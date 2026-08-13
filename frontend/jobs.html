@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recommended Jobs | PLUTO</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="assets/logo.png" alt="Pluto Logo" />
+      <span>PLUTO</span>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <ul class="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="upload-resume.html">Upload Resume</a></li>
+      <li><a href="jobs.html" class="active">Jobs</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+    <label for="nav-toggle" class="navbar-toggle">
+      <span></span><span></span><span></span>
+    </label>
+  </nav>
+
+  <!-- ===== JOBS CONTENT ===== -->
+  <section class="container section">
+    <h1>Recommended Jobs For You</h1>
+    <p class="text-muted" style="margin-bottom: 30px;">Ranked by how well they match your resume.</p>
+
+    <p id="loadingMessage">Loading recommended jobs...</p>
+    <p id="errorMessage" class="form-message error"></p>
+
+    <div class="grid job-list" id="jobList"></div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-logo">
+        <img src="assets/logo.png" alt="Pluto Logo" />
+        <span>PLUTO</span>
+      </div>
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="upload-resume.html">Upload Resume</a></li>
+          <li><a href="jobs.html">Jobs</a></li>
+          <li><a href="profile.html">Profile</a></li>
+        </ul>
+      </div>
+      <div class="footer-about">
+        <h3>About PLUTO</h3>
+        <p>AI-powered resume checker and job recommendation tool to help you land your next role faster.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 PLUTO. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/jobs.js"></script>
+</body>
+</html>

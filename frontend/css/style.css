@@ -1,0 +1,970 @@
+/* =========================================
+   PLUTO — Global Stylesheet
+   Single file used across all pages
+   ========================================= */
+
+/* ===== 1. BRAND VARIABLES (do not change) ===== */
+:root {
+  --primary-color: #72411e;
+  --primary-light: #8a5726;
+  --primary-dark: #5c3417;
+  --white-color: #ffffff;
+  --bg-light: #fdf6ee;
+  --text-dark: #2b2b2b;
+  --text-muted: #6b6b6b;
+  --border-color: #e5ddd3;
+  --success-color: #2e7d32;
+  --success-bg: #e8f5e9;
+  --error-color: #c0392b;
+  --error-bg: #fdecea;
+  --border-radius: 8px;
+  --shadow: 0 4px 12px rgba(114, 65, 30, 0.15);
+  --max-width: 1200px;
+}
+
+/* ===== 2. RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* ===== 3. LAYOUT HELPERS ===== */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section {
+  padding: 60px 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+/* ===== 4. TYPOGRAPHY ===== */
+h1, h2, h3, h4 {
+  color: var(--primary-color);
+  line-height: 1.3;
+}
+
+h1 { font-size: 2.5rem; margin-bottom: 16px; }
+h2 { font-size: 2rem; margin-bottom: 14px; }
+h3 { font-size: 1.4rem; margin-bottom: 10px; }
+
+p {
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* ===== 5. REUSABLE BUTTONS ===== */
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+}
+
+.btn:hover {
+  background-color: var(--primary-light);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.btn-small {
+  padding: 8px 18px;
+  font-size: 14px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== 6. REUSABLE CARDS ===== */
+.card {
+  background-color: var(--white-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+/* ===== 7. REUSABLE FORMS (login, register, profile) ===== */
+.form-group {
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--white-color);
+  color: var(--text-dark);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.form-card {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 40px 30px;
+}
+
+.form-message {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.form-message.success {
+  color: var(--success-color);
+}
+
+.form-message.error {
+  color: var(--error-color);
+}
+
+.form-footer-text {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.form-footer-text a {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* ===== 8. BADGES / TAGS (used in ATS results, jobs) ===== */
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-matched {
+  background-color: var(--success-bg);
+  color: var(--success-color);
+}
+
+.badge-missing {
+  background-color: var(--error-bg);
+  color: var(--error-color);
+}
+
+.badge-primary {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+/* ===== 9. NAVBAR (pure CSS responsive, no JS) ===== */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  background-color: var(--white-color);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-logo img {
+ width: 80px;
+  height: 80px;
+  background-color: #f1e4cb; /* Beige background */
+  border-radius: 50%;
+  z-index: 2;
+
+}
+
+.navbar-logo span {
+  font-size: 1.4rem;
+  font-weight: bold;
+  background:#72411e;
+  color:white;
+  position: relative;
+  padding-right: 13px ;
+  margin-left: -40px; /* Overlaps slightly with the circle */
+  padding-left: 40px; /* Gives space inside for the overlap */
+  height: 45px;
+  display: flex;
+  align-items: center;
+  border-radius: 15px;
+
+}
+
+.nav-toggle {
+  display: none;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.navbar-links a {
+  font-weight: 500;
+  color: var(--text-dark);
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover,
+.navbar-links a.active {
+  color: var(--primary-color);
+}
+
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.navbar-toggle span {
+  width: 26px;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
+/* ===== 10. FOOTER ===== */
+.footer {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  padding: 40px 20px 20px;
+  margin-top: 60px;
+}
+
+.footer-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.footer-logo img {
+  width: 80px;
+  height: 80px;
+  background-color: #f1e4cb; /* Beige background */
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.footer-logo span {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.footer-about {
+  max-width: 300px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.footer-links h3,
+.footer-about h3 {
+  color: var(--white-color);
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.footer-links a {
+  color: var(--white-color);
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* ===== 11. RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet */
+@media (max-width: 992px) {
+  h1 { font-size: 2.1rem; }
+  h2 { font-size: 1.7rem; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .navbar-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: 18px;
+    padding: 20px 0;
+    background-color: var(--white-color);
+    box-shadow: var(--shadow);
+  }
+
+  /* Pure CSS toggle: checked checkbox reveals the menu */
+  .nav-toggle:checked ~ .navbar-links {
+    display: flex;
+  }
+
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.5rem; }
+
+  .section {
+    padding: 40px 0;
+  }
+
+  .form-card {
+    margin: 30px 16px;
+    padding: 30px 20px;
+  }
+}
+/* ===== 12. HOME PAGE COMPONENTS ===== */
+
+/* Hero */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 60px 0;
+}
+
+.hero-content {
+  flex: 1;
+  min-width: 300px;
+}
+
+.hero-content p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 26px;
+  max-width: 480px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-image {
+  flex: 1;
+  min-width: 260px;
+  text-align: center;
+}
+
+.hero-image img {
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* Upload CTA banner */
+.upload-cta {
+  background-color: var(--white-color);
+  border: 2px dashed var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 40px;
+  text-align: center;
+}
+
+.upload-cta h2 {
+  margin-bottom: 10px;
+}
+
+.upload-cta p {
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+/* Two-column info blocks (ATS score / Job recommendation explanation) */
+.info-block {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 40px 0;
+}
+
+.info-block.reverse {
+  flex-direction: row-reverse;
+}
+
+.info-block-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.info-block-icon {
+  flex: 1;
+  min-width: 200px;
+  text-align: center;
+  font-size: 5rem;
+}
+
+/* How it works — step cards */
+.steps-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  text-align: center;
+}
+
+.step-card .step-number {
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  border-radius: 50%;
+  font-weight: bold;
+  margin: 0 auto 14px;
+}
+
+/* Feature cards */
+.features-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.feature-card {
+  text-align: center;
+}
+
+.feature-card .feature-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+}
+
+/* Final CTA section */
+.cta-section {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  text-align: center;
+  padding: 60px 20px;
+  border-radius: var(--border-radius);
+  margin: 60px 0;
+}
+
+.cta-section h2 {
+  color: var(--white-color);
+  margin-bottom: 14px;
+}
+
+.cta-section p {
+  color: var(--white-color);
+  opacity: 0.9;
+  margin-bottom: 24px;
+}
+
+.cta-section .btn {
+  background-color: var(--white-color);
+  color: var(--primary-color);
+}
+
+.cta-section .btn:hover {
+  background-color: var(--bg-light);
+}
+
+/* ===== 14. RESUME UPLOAD COMPONENTS ===== */
+
+.upload-box {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 50px 20px;
+  border: 3px dashed var(--primary-color);
+  border-radius: var(--border-radius);
+  background-color: var(--white-color);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.upload-box.drag-over {
+  background-color: var(--bg-light);
+}
+
+.upload-box .upload-icon {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.upload-box p {
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.file-info-card {
+  max-width: 500px;
+  margin: 20px auto 0;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.file-info-card.show {
+  display: flex;
+}
+
+.file-info-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-info-left .file-icon {
+  font-size: 1.6rem;
+  color: var(--primary-color);
+}
+
+.file-info-name {
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.file-info-size {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 0;
+}
+
+.remove-file-btn {
+  background: none;
+  border: none;
+  color: var(--error-color);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.upload-actions {
+  max-width: 500px;
+  margin: 24px auto 0;
+  text-align: center;
+}
+
+/* Simple loading spinner */
+.spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  border-top-color: var(--white-color);
+  border-radius: 50%;
+  margin: 0 auto;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner.show {
+  display: block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+/* ===== 15. ATS RESULT COMPONENTS ===== */
+
+.score-overview {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.score-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(var(--primary-color) calc(var(--score) * 1%), var(--border-color) 0);
+}
+
+.score-circle-inner {
+  width: 126px;
+  height: 126px;
+  background-color: var(--white-color);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-circle-inner .score-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.score-circle-inner .score-max {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.score-summary-text h2 {
+  margin-bottom: 8px;
+}
+
+/* Breakdown bars (keyword, skills, experience, education, formatting) */
+.breakdown-list {
+  margin-bottom: 40px;
+}
+
+.breakdown-item {
+  margin-bottom: 18px;
+}
+
+.breakdown-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.breakdown-item-header span:last-child {
+  color: var(--primary-color);
+}
+
+.breakdown-bar-track {
+  width: 100%;
+  height: 10px;
+  background-color: var(--border-color);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.breakdown-bar-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 20px;
+  transition: width 0.4s ease;
+}
+
+/* Keyword sections */
+.keyword-columns {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.keyword-box {
+  flex: 1;
+  min-width: 260px;
+}
+
+.keyword-box h3 {
+  margin-bottom: 14px;
+}
+
+.keyword-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Suggestions */
+.suggestions-list {
+  list-style: none;
+}
+
+.suggestions-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.suggestions-list li:last-child {
+  border-bottom: none;
+}
+
+.suggestion-icon {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+/* ===== 16. JOBS PAGE COMPONENTS ===== */
+
+.job-list {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.job-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.job-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.job-card h3 {
+  margin-bottom: 4px;
+}
+
+.job-company {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.job-location {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.job-description {
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.job-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.match-badge {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  font-size: 0.8rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+/* ===== 17. PROFILE PAGE COMPONENTS ===== */
+
+.profile-card {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 auto 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.form-row .form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.form-hint {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 4px;
+
+}
+/* ===== 18. JOB DETAILS COMPONENTS ===== */
+
+.job-details-card {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.job-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.job-details-header h1 {
+  margin-bottom: 6px;
+}
+
+.job-details-meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.job-details-section {
+  margin-bottom: 26px;
+}
+
+.job-details-section h3 {
+  margin-bottom: 10px;
+}
+
+.job-details-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
