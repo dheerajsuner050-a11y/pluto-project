@@ -2,7 +2,7 @@
 // Powers upload-resume.html: drag & drop, file selection, validation,
 // and uploading the resume to the backend via fetch().
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://pluto-project-production.up.railway.app";
 const MAX_FILE_SIZE_MB = 5;
 const ALLOWED_EXTENSIONS = [".pdf", ".docx"];
 

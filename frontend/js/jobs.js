@@ -3,7 +3,7 @@
 // and renders them as cards. Each card links to job-details.html?id=... 
 // (job-details.html itself will be built when we get to it).
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://pluto-project-production.up.railway.app";
 
 document.addEventListener("DOMContentLoaded", function () {
   if (document.getElementById("jobList")) {
