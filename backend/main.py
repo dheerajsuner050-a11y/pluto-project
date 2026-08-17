@@ -1,3 +1,6 @@
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import os
 import uuid
 import io
@@ -156,13 +159,47 @@ def register_user(user_data: UserRegisterRequest, db: Session = Depends(get_db))
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
+
+        send_welcome_email(new_user.email, new_user.full_name)
+
         return {"message": "Account created successfully!"}
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"DEBUG ERROR: {str(e)}")
 
+GMAIL_USER = os.getenv("GMAIL_USER")
+GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 
+
+def send_welcome_email(to_email: str, name: str):
+    """Sends a simple welcome email after registration.
+    If it fails for any reason, we just print the error —
+    we don't want email failures to block registration."""
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = GMAIL_USER
+        msg["To"] = to_email
+        msg["Subject"] = "Welcome to PLUTO!"
+
+        body = f"""Hi {name},
+
+Welcome to PLUTO! Your account has been created successfully.
+
+You can now upload your resume, get your ATS score, and discover jobs matched to your skills.
+
+Thanks,
+The PLUTO Team
+"""
+        msg.attach(MIMEText(body, "plain"))
+
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+            server.send_message(msg)
+
+    except Exception as e:
+        print(f"Failed to send welcome email: {e}")
 # ===== LOGIN =====
 @app.post("/api/auth/login")
 def login_user(login_data: UserLoginRequest, db: Session = Depends(get_db)):
