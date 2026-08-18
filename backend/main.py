@@ -1,11 +1,11 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import os
 import uuid
 import io
+import smtplib
 from datetime import datetime, timedelta
 from typing import Optional, List
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +19,7 @@ from jose import jwt
 from pypdf import PdfReader
 
 from database import engine, Base, get_db
+import jobs_matcher
 
 # ===================== MODELS =====================
 
@@ -95,6 +96,41 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="User not found.")
     return user
 
+# ===================== EMAIL HELPER =====================
+
+GMAIL_USER = os.getenv("GMAIL_USER")
+GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+
+
+def send_welcome_email(to_email: str, name: str):
+    """Sends a simple welcome email after registration.
+    If it fails for any reason, we just print the error —
+    we don't want email failures to block registration."""
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = GMAIL_USER
+        msg["To"] = to_email
+        msg["Subject"] = "Welcome to PLUTO!"
+
+        body = f"""Hi {name},
+
+Welcome to PLUTO! Your account has been created successfully.
+
+You can now upload your resume, get your ATS score, and discover jobs matched to your skills.
+
+Thanks,
+The PLUTO Team
+"""
+        msg.attach(MIMEText(body, "plain"))
+
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+            server.send_message(msg)
+
+    except Exception as e:
+        print(f"Failed to send welcome email: {e}")
+
 # ===================== SCHEMAS =====================
 
 class UserRegisterRequest(BaseModel):
@@ -168,38 +204,7 @@ def register_user(user_data: UserRegisterRequest, db: Session = Depends(get_db))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"DEBUG ERROR: {str(e)}")
 
-GMAIL_USER = os.getenv("GMAIL_USER")
-GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 
-
-def send_welcome_email(to_email: str, name: str):
-    """Sends a simple welcome email after registration.
-    If it fails for any reason, we just print the error —
-    we don't want email failures to block registration."""
-    try:
-        msg = MIMEMultipart()
-        msg["From"] = GMAIL_USER
-        msg["To"] = to_email
-        msg["Subject"] = "Welcome to PLUTO!"
-
-        body = f"""Hi {name},
-
-Welcome to PLUTO! Your account has been created successfully.
-
-You can now upload your resume, get your ATS score, and discover jobs matched to your skills.
-
-Thanks,
-The PLUTO Team
-"""
-        msg.attach(MIMEText(body, "plain"))
-
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-            server.send_message(msg)
-
-    except Exception as e:
-        print(f"Failed to send welcome email: {e}")
 # ===== LOGIN =====
 @app.post("/api/auth/login")
 def login_user(login_data: UserLoginRequest, db: Session = Depends(get_db)):
@@ -352,7 +357,7 @@ def get_ats_report(resume_id: int, current_user: User = Depends(get_current_user
 # ===== JOBS =====
 def get_latest_resume_text(current_user, db):
     latest = db.query(Resume).filter(Resume.user_id == current_user.id).order_by(Resume.uploaded_at.desc()).first()
-    return latest.extracted_text.lower() if latest and latest.extracted_text else ""
+    return latest.extracted_text if latest and latest.extracted_text else ""
 
 
 def calc_match(job_skills, resume_text_lower):
@@ -364,29 +369,33 @@ def calc_match(job_skills, resume_text_lower):
 
 @app.get("/api/jobs/recommended")
 def get_recommended_jobs(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    resume_text_lower = get_latest_resume_text(current_user, db)
-    jobs = db.query(Job).all()
+    resume_text = get_latest_resume_text(current_user, db)
+    resume_text_lower = resume_text.lower()
+
+    # 1. Our own MySQL "jobs" table (unchanged, existing sample jobs)
+    internal_jobs = db.query(Job).all()
     result = []
-    for job in jobs:
+    for job in internal_jobs:
         job_skills = job.skills.split(",") if job.skills else []
         result.append({
-            "id": job.id, "title": job.title, "company": job.company, "location": job.location,
-            "type": job.job_type, "matchPercent": calc_match(job_skills, resume_text_lower),
-            "skills": job_skills, "description": job.description,
+            "id": str(job.id),
+            "title": job.title,
+            "company": job.company,
+            "location": job.location,
+            "type": job.job_type,
+            "matchPercent": calc_match(job_skills, resume_text_lower),
+            "skills": job_skills,
+            "description": job.description,
+            "source": "internal",
         })
+
+    # 2. Live jobs from Adzuna, based on the user's uploaded resume
+    if resume_text:
+        try:
+            adzuna_jobs = jobs_matcher.get_adzuna_recommendations(resume_text)
+            result.extend(adzuna_jobs)
+        except Exception as e:
+            print(f"Adzuna job fetch failed: {e}")
+
     result.sort(key=lambda j: j["matchPercent"], reverse=True)
     return result
-
-
-@app.get("/api/jobs/{job_id}")
-def get_job_details(job_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found.")
-    resume_text_lower = get_latest_resume_text(current_user, db)
-    job_skills = job.skills.split(",") if job.skills else []
-    return {
-        "title": job.title, "company": job.company, "location": job.location, "type": job.job_type,
-        "matchPercent": calc_match(job_skills, resume_text_lower), "description": job.description,
-        "skills": job_skills, "applyUrl": job.apply_url,
-    }
