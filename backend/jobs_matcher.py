@@ -57,7 +57,7 @@ SKILL_ALIASES = {
     "ui/ux": "ui design", "user interface": "ui design", "user experience": "ux design",
 }
 
-JOB_ROLES = {
+JOB_ROLES = { 
     "python": ["Python Developer", "Backend Developer", "Software Developer"],
     "java": ["Java Developer", "Backend Developer", "Software Developer"],
     "c++": ["C++ Developer", "Software Developer"],
@@ -66,7 +66,7 @@ JOB_ROLES = {
     "angular": ["Angular Developer", "Frontend Developer"],
     "node.js": ["Node.js Developer", "Backend Developer"],
     "sql": ["SQL Developer", "Database Developer", "Data Analyst"],
-    "pandas": ["Data Analyst", "Python Data Analyst"],
+    "pandas": ["Data Analyst", "Python Data Analyst"],d
     "numpy": ["Data Analyst", "Python Developer"],
     "data analysis": ["Data Analyst", "Business Analyst"],
     "data visualization": ["Data Analyst", "BI Analyst"],
