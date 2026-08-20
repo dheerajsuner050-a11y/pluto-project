@@ -15,7 +15,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, text
 from sqlalchemy.sql import func
 from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
-from jose import jwt
+from jose import jwt, JWTError
 from pypdf import PdfReader
 
 from database import engine, Base, get_db
@@ -68,6 +68,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = "pluto-secret-key-change-this-later"
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 60 * 24
+RESET_TOKEN_EXPIRE_MINUTES = 15
 security = HTTPBearer()
 
 
@@ -78,6 +79,14 @@ def verify_password(p, h): return pwd_context.verify(p, h)
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def create_reset_token(email: str) -> str:
+    """Short-lived token (15 min) used only for password reset links."""
+    to_encode = {"sub": email, "purpose": "password_reset"}
+    expire = datetime.utcnow() + timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -96,31 +105,22 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="User not found.")
     return user
 
-# ===================== EMAIL HELPER =====================
+# ===================== EMAIL HELPERS =====================
 
 GMAIL_USER = os.getenv("GMAIL_USER")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 
+# Change this to your actual live frontend URL
+FRONTEND_URL = "https://dheerajsuner050-a11y.github.io/pluto-project/frontend"
 
-def send_welcome_email(to_email: str, name: str):
-    """Sends a simple welcome email after registration.
-    If it fails for any reason, we just print the error —
-    we don't want email failures to block registration."""
+
+def send_email(to_email: str, subject: str, body: str):
+    """Generic email sender — used by both welcome and reset-password emails."""
     try:
         msg = MIMEMultipart()
         msg["From"] = GMAIL_USER
         msg["To"] = to_email
-        msg["Subject"] = "Welcome to PLUTO!"
-
-        body = f"""Hi {name},
-
-Welcome to PLUTO! Your account has been created successfully.
-
-You can now upload your resume, get your ATS score, and discover jobs matched to your skills.
-
-Thanks,
-The PLUTO Team
-"""
+        msg["Subject"] = subject
         msg.attach(MIMEText(body, "plain"))
 
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
@@ -129,7 +129,37 @@ The PLUTO Team
             server.send_message(msg)
 
     except Exception as e:
-        print(f"Failed to send welcome email: {e}")
+        print(f"Failed to send email to {to_email}: {e}")
+
+
+def send_welcome_email(to_email: str, name: str):
+    body = f"""Hi {name},
+
+Welcome to PLUTO! Your account has been created successfully.
+
+You can now upload your resume, get your ATS score, and discover jobs matched to your skills.
+
+Thanks,
+The PLUTO Team
+"""
+    send_email(to_email, "Welcome to PLUTO!", body)
+
+
+def send_reset_email(to_email: str, name: str, token: str):
+    reset_link = f"{FRONTEND_URL}/reset-password.html?token={token}"
+    body = f"""Hi {name},
+
+We received a request to reset your PLUTO password.
+
+Click the link below to set a new password (valid for {RESET_TOKEN_EXPIRE_MINUTES} minutes):
+{reset_link}
+
+If you didn't request this, you can safely ignore this email.
+
+Thanks,
+The PLUTO Team
+"""
+    send_email(to_email, "Reset your PLUTO password", body)
 
 # ===================== SCHEMAS =====================
 
@@ -150,6 +180,13 @@ class UserProfileUpdateRequest(BaseModel):
     education: Optional[str] = None
     experience: Optional[str] = None
     skills: List[str] = []
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    newPassword: str
 
 # ===================== APP =====================
 
@@ -220,6 +257,41 @@ def login_user(login_data: UserLoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"DEBUG ERROR: {str(e)}")
 
 
+# ===== FORGOT PASSWORD =====
+@app.post("/api/auth/forgot-password")
+def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == data.email).first()
+
+    # Always return the same message, whether or not the email exists —
+    # this prevents attackers from guessing which emails are registered.
+    if user:
+        token = create_reset_token(user.email)
+        send_reset_email(user.email, user.full_name, token)
+
+    return {"message": "If that email is registered, a reset link has been sent."}
+
+
+# ===== RESET PASSWORD =====
+@app.post("/api/auth/reset-password")
+def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(data.token, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        raise HTTPException(status_code=400, detail="This reset link is invalid or has expired.")
+
+    if payload.get("purpose") != "password_reset":
+        raise HTTPException(status_code=400, detail="Invalid reset token.")
+
+    user = db.query(User).filter(User.email == payload.get("sub")).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    user.password = hash_password(data.newPassword)
+    db.commit()
+
+    return {"message": "Password reset successfully! You can now log in with your new password."}
+
+
 # ===== PROFILE =====
 @app.get("/api/users/profile")
 def get_profile(current_user: User = Depends(get_current_user)):
@@ -251,7 +323,7 @@ def update_profile(
     return {"message": "Profile updated successfully!"}
 
 
-# ===== RESUME UPLOAD =====
+# ===== RESUME UPLOAD (+ AUTOFILL PROFILE) =====
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -298,6 +370,28 @@ async def upload_resume(
     db.add(new_resume)
     db.commit()
     db.refresh(new_resume)
+
+    # ----- AUTOFILL PROFILE -----
+    # Only fills in fields that are still empty, so we never overwrite
+    # something the user already edited manually.
+    try:
+        skills_found = jobs_matcher.extract_skills(extracted_text)
+        education_found = jobs_matcher.extract_education(extracted_text)
+        experience_found = jobs_matcher.extract_experience(extracted_text)
+
+        if not current_user.skills and skills_found:
+            current_user.skills = ",".join(skills_found)
+
+        if not current_user.education and education_found:
+            current_user.education = ", ".join(education_found)
+
+        if not current_user.experience and experience_found is not None:
+            current_user.experience = f"{experience_found:g} year(s)"
+
+        db.commit()
+    except Exception as e:
+        print(f"Autofill profile failed (non-blocking): {e}")
+
     return {"resumeId": new_resume.id}
 
 
@@ -372,7 +466,6 @@ def get_recommended_jobs(current_user: User = Depends(get_current_user), db: Ses
     resume_text = get_latest_resume_text(current_user, db)
     resume_text_lower = resume_text.lower()
 
-    # 1. Our own MySQL "jobs" table (unchanged, existing sample jobs)
     internal_jobs = db.query(Job).all()
     result = []
     for job in internal_jobs:
@@ -389,7 +482,6 @@ def get_recommended_jobs(current_user: User = Depends(get_current_user), db: Ses
             "source": "internal",
         })
 
-    # 2. Live jobs from Adzuna, based on the user's uploaded resume
     if resume_text:
         try:
             adzuna_jobs = jobs_matcher.get_adzuna_recommendations(resume_text)
